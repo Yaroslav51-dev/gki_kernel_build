@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir -p $HOME/kernel
         cd $HOME/kernel
-        repo init -u https://github.com/pa-gr/kernel_manifest -b uvite-xiaomi-sm8450
+        repo init -u https://github.com/Yaroslav51-dev/kernel_manifest.git -b android12-5.10
         repo sync -c --no-tags --no-clone-bundle --optimized-fetch --force-sync -j$(nproc)
 
     - name: Подготовка окружения для marble
