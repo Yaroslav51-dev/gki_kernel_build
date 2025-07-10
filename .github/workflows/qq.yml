@@ -39,7 +39,7 @@ jobs:
         mkdir -p $HOME/kernel
         cd $HOME/kernel
         repo init -u https://github.com/pa-gr/kernel_manifest -b uvite-xiaomi-sm8450
-        repo sync -c --no-tags --no-clone-bundle -j$(nproc)
+        repo sync -c --no-tags --no-clone-bundle --optimized-fetch --force-sync --depth=1 -j$(nproc)
 
     - name: Подготовка окружения для marble
       run: |
