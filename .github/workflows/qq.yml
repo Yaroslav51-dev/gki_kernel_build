@@ -27,30 +27,18 @@ jobs:
       run: |             
              curl https://raw.githubusercontent.com/akhilnarang/scripts/master/setup/android_build_env.sh | bash -
 
-    - name: Установка repo
-      run: |
-        mkdir -p $HOME/bin
-        curl -o $HOME/bin/repo https://storage.googleapis.com/git-repo-downloads/repo
-        chmod +x $HOME/bin/repo
-        echo "$HOME/bin" >> $GITHUB_PATH
-
     - name: Инициализация repo
       run: |
         mkdir -p $HOME/kernel
         cd $HOME/kernel
         repo init -u https://github.com/Yaroslav51-dev/kernel_manifest.git -b android12-5.10
         repo sync -c --no-tags --no-clone-bundle --optimized-fetch --force-sync -j$(nproc)
-
-    - name: Подготовка окружения для marble
-      run: |
         cd $HOME/kernel/kernel_platform/build
         mkdir -p $HOME/pa/device/xiaomi/marble-kernel/dtbs
         echo "SRC_ROOT=$HOME/pa" > .build.rc
-
-    - name: Сборка ядра для marble
-      run: |
-        mkdir -p $HOME/kernel/kernel_platform/xiaomi/sm8450/out
-        cd $HOME/kernel/kernel_platform/xiaomi/sm8450
+        cd ..
+        mkdir -p /xiaomi/sm8450/out
+        cd /xiaomi/sm8450
         chmod +x build.sh
         ./build.sh marble
 
