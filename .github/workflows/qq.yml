@@ -49,8 +49,8 @@ jobs:
 
     - name: Сборка ядра для marble
       run: |
+        mkdir -p $HOME/kernel/kernel_platform/xiaomi/sm8450/out
         cd $HOME/kernel/kernel_platform/xiaomi/sm8450
-        mkdir out
         chmod +x build.sh
         ./build.sh marble
 
