@@ -1,0 +1,51 @@
+name: Build Xiaomi SM8450 Kernel (marble)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Установка зависимостей
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git curl unzip python3 python3-pip openjdk-11-jdk build-essential bc bison flex libssl-dev
+
+    - name: Установка repo
+      run: |
+        mkdir -p $HOME/bin
+        curl -o $HOME/bin/repo https://storage.googleapis.com/git-repo-downloads/repo
+        chmod +x $HOME/bin/repo
+        echo "$HOME/bin" >> $GITHUB_PATH
+
+    - name: Инициализация repo
+      run: |
+        mkdir -p $HOME/kernel
+        cd $HOME/kernel
+        repo init -u https://github.com/pa-gr/kernel_manifest -b uvite-xiaomi-sm8450
+        repo sync -c --no-tags --no-clone-bundle -j$(nproc)
+
+    - name: Подготовка окружения для marble
+      run: |
+        cd $HOME/kernel/kernel_platform/build
+        mkdir -p $HOME/pa/device/xiaomi/marble-kernel/dtbs
+        echo "SRC_ROOT=$HOME/pa" > .build.rc
+
+    - name: Сборка ядра для marble
+      run: |
+        cd $HOME/kernel/kernel_platform/build
+        chmod +x build.sh
+        ./build.sh marble
+
+    - name: Загрузка артефактов
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Kernel-marble
+        path: |
+          $HOME/kernel/kernel_platform/build/out/arch/arm64/boot/Image
+          $HOME/kernel/kernel_platform/build/out/kernel/su.ko
+          $HOME/pa/device/xiaomi/marble-kernel/dtbs
+          
